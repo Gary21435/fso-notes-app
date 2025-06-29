@@ -3,6 +3,9 @@ const app = express()
 
 app.use(express.json()); // I guess imports the json() function
 
+app.use(express.static('dist'));
+// to serve static files, i.e. index.html, .js, etc. in dist
+
 // const cors = require('cors')
 // app.use(cors());
 // cross-origin resource sharing enabled
