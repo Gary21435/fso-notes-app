@@ -1,3 +1,7 @@
+require('dotenv').config() // to be able to use environment variables
+
+const Note = require('./mongo');
+
 const express = require('express')
 const app = express()
 
@@ -11,31 +15,37 @@ app.use(express.static('dist'));
 // cross-origin resource sharing enabled
 
 
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: "3",
-    content: "REST Client is good for testing backend",
-    important: true
-  }
-]
+// let notes = 
+
+// [
+//   {
+//     id: "1",
+//     content: "HTML is easy",
+//     important: true
+//   },
+//   {
+//     id: "2",
+//     content: "Browser can execute only JavaScript",
+//     important: false
+//   },
+//   {
+//     id: "3",
+//     content: "REST Client is good for testing backend",
+//     important: true
+//   }
+// ]
 
 app.get('/', (request, response) => {
   response.send('<a>Hello World!</a>')
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
-  console.log(notes);
+  Note.find({}).then(res => {
+    // res.forEach(notes => {
+    console.log("this is from the db!");
+    response.json(res); // respond with notes in json format
+      // Note automatically converts the data from db to json
+  });
 })
 
 // Whatever is preceded by : is added to request.params and can then be used in the body
@@ -68,18 +78,23 @@ app.post('/api/notes', (request, response) => {
     return response.status(400).json({
       error: 'content missing'
     });
-  let newNote = {
-    id: String(Math.floor(Math.random()*10000)),
+  const newNote = {
+    // id: String(Math.floor(Math.random()*10000)),
     content: note.content,
-    important: note.important || false
+    important: note.important
   }
+
+  // save to DB
+  Note.save().then(() => {
+    console.log('note saved.');
+  })
   
-  notes.push(newNote);
+  //notes.push(newNote);
   response.json(newNote);
 })
 
 
-const PORT = 3001 || process.env.PORT;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
