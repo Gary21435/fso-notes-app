@@ -74,7 +74,7 @@ app.post('/api/notes', (request, response) => {
   console.log("posted note: ", note);
   console.log("content type header: ", request.get('content-type'));
   // add posted note to 'notes' array
-  if(!note.content || !note.important) 
+  if(!note.content) 
     return response.status(400).json({
       error: 'content missing'
     });
