@@ -78,14 +78,14 @@ app.post('/api/notes', (request, response) => {
     return response.status(400).json({
       error: 'content missing'
     });
-  const newNote = {
+  const newNote = new Note({
     // id: String(Math.floor(Math.random()*10000)),
     content: note.content,
     important: note.important
-  }
+  })
 
   // save to DB
-  Note.save().then(() => {
+  newNote.save().then(() => {
     console.log('note saved.');
   })
   
